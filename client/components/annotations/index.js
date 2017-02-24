@@ -107,21 +107,6 @@ class Annotation {
       this.openAnnotation(element);
       element.setAttribute('aria-expanded', 'true');
     });
-
-    window.addEventListener('resize', debounce(() => {
-      const width = this.calculateAnnotationWidth();
-
-      if (width && this.selectedHighlight) {
-        const annotationPosition = this.calculateAnnotationYPosition(this.selectedHighlight, this.annotationModals);
-        this.annotationModals.classList.add('speech__annotation--absolute');
-        this.annotationModals.style.width = `${this.calculateAnnotationWidth()}px`;
-        this.annotationModals.style.top = `${annotationPosition.top}px`;
-        this.annotationModals.style.left = `${annotationPosition.left}px`;
-      } else {
-        this.annotationModals.classList.remove('speech__annotation--absolute');
-        this.annotationModals.style.width = '100%';
-      }
-    }, 250));
   }
 
   getAnnotations() {
@@ -185,11 +170,6 @@ class Annotation {
       this.annotationModals[id].setAttribute('aria-live', 'polite');
       this.annotationModals[id].classList.add('speech__annotation');
 
-      if (annotationWidth) {
-        this.annotationModals[id].classList.add('speech__annotation--absolute');
-        this.annotationModals[id].style.width = `${annotationWidth}px`;
-      }
-
       this.rootElement.appendChild(this.annotationModals[id]);
     });
   }
@@ -213,7 +193,7 @@ class Annotation {
 
   generateAnnotationMarkup(data) {
     const md = new MarkdownIt();
-    console.log(data);
+    // console.log(data);
     let authorLink = data.author && data.authorlink ? `<a href="${data.authorlink}" rel="author" class="speech__annotation-byline">${data.author}</a>` : '';
 
     if (authorLink === '' && data.author) {
