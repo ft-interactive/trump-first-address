@@ -110,19 +110,3 @@ $highlight: rgb(80,212,196);
         cursor: pointer;
     }
 }
-
-.speech__highlight--pulse {
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    background-color: rgba(oColorsGetPaletteColor('grey-tint5'), 0.15);
-  }
-  50% {
-    background-color: $highlight;
-  }
-  100% {
-    background-color: rgba(oColorsGetPaletteColor('grey-tint5'), 0.15);
-  }
-}
