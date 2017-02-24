@@ -28,9 +28,9 @@ class Annotation {
     this.highlightElements;
     this.annotations;
     this.selectedHighlight;
+    this.annotationModals = {};
 
     this.getAnnotations();
-    this.appendAnnotation();
   }
 
   static init(rootElement, options = {}) {
@@ -62,7 +62,7 @@ class Annotation {
     const eventHandler = (event) => {
       if (event.type === 'click' || (event.type === 'click' && event.keyCode === 13)) {
         if (this.selectedHighlight && this.selectedHighlight === event.target) {
-          this.annotationModal.innerHTML = '';
+          this.annotationModals.innerHTML = '';
           this.selectedHighlight.setAttribute('aria-expanded', 'false');
           this.selectedHighlight = null;
           if (typeof (ga) !== 'undefined') {
@@ -105,20 +105,21 @@ class Annotation {
         }
       });
       this.openAnnotation(element);
+      element.setAttribute('aria-expanded', 'true');
     });
 
     window.addEventListener('resize', debounce(() => {
       const width = this.calculateAnnotationWidth();
 
       if (width && this.selectedHighlight) {
-        const annotationPosition = this.calculateAnnotationYPosition(this.selectedHighlight, this.annotationModal);
-        this.annotationModal.classList.add('speech__annotation--absolute');
-        this.annotationModal.style.width = `${this.calculateAnnotationWidth()}px`;
-        this.annotationModal.style.top = `${annotationPosition.top}px`;
-        this.annotationModal.style.left = `${annotationPosition.left}px`;
+        const annotationPosition = this.calculateAnnotationYPosition(this.selectedHighlight, this.annotationModals);
+        this.annotationModals.classList.add('speech__annotation--absolute');
+        this.annotationModals.style.width = `${this.calculateAnnotationWidth()}px`;
+        this.annotationModals.style.top = `${annotationPosition.top}px`;
+        this.annotationModals.style.left = `${annotationPosition.left}px`;
       } else {
-        this.annotationModal.classList.remove('speech__annotation--absolute');
-        this.annotationModal.style.width = '100%';
+        this.annotationModals.classList.remove('speech__annotation--absolute');
+        this.annotationModals.style.width = '100%';
       }
     }, 250));
   }
@@ -133,6 +134,7 @@ class Annotation {
     }).then(data => {
       this.annotations = data.annotations;
       this.addHighlighting();
+      this.appendAnnotation(this.annotations);
       this.bindListeners();
     }).catch(error => {
       console.error(error);
@@ -158,7 +160,9 @@ class Annotation {
     highlight.setAttribute('aria-controls', 'annotation');
     highlight.setAttribute('role', 'button');
 
-    node.innerHTML = node.innerHTML.replace(matcher, highlight.outerHTML);
+    if (node.innerHTML) {
+      node.innerHTML = node.innerHTML.replace(matcher, highlight.outerHTML);
+    }
   }
 
   elementContainingAnnotationMatcher(matcher) {
@@ -170,36 +174,41 @@ class Annotation {
     }
   }
 
-  appendAnnotation() {
+  appendAnnotation(annotations) {
     const annotationWidth = this.calculateAnnotationWidth();
-    this.annotationModal = document.createElement('aside');
-    this.annotationModal.id = 'annotation';
-    this.annotationModal.setAttribute('aria-hidden', true);
-    this.annotationModal.setAttribute('aria-live', 'polite');
-    this.annotationModal.classList.add('speech__annotation');
+    annotations.forEach((annotation, i) => {
+      const id = `annotation-${i}`;
+      this.annotationModals[id] = {};
+      this.annotationModals[id] = document.createElement('aside');
+      this.annotationModals[id].id = 'annotation';
+      this.annotationModals[id].setAttribute('aria-hidden', true);
+      this.annotationModals[id].setAttribute('aria-live', 'polite');
+      this.annotationModals[id].classList.add('speech__annotation');
 
-    if (annotationWidth) {
-      this.annotationModal.classList.add('speech__annotation--absolute');
-      this.annotationModal.style.width = `${annotationWidth}px`;
-    }
+      if (annotationWidth) {
+        this.annotationModals[id].classList.add('speech__annotation--absolute');
+        this.annotationModals[id].style.width = `${annotationWidth}px`;
+      }
 
-    this.rootElement.appendChild(this.annotationModal);
+      this.rootElement.appendChild(this.annotationModals[id]);
+    });
   }
 
   openAnnotation(clickedElement) {
     const annotationIndex = clickedElement.getAttribute(this.highlightAttribute);
-    this.annotationModal.innerHTML = this.generateAnnotationMarkup(this.annotations[annotationIndex]);
+    const id = `annotation-${annotationIndex}`;
+    this.annotationModals[id].innerHTML = this.generateAnnotationMarkup(this.annotations[annotationIndex]);
 
-    this.annotationModal.style.top = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModal).top}px`;
+    this.annotationModals[id].style.top = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModals[id]).top}px`;
 
 
-    this.annotationModal.style.left = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModal).left}px`;
+    this.annotationModals[id].style.left = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModals[id]).left}px`;
 
-    this.annotationModal.style.visibility = 'visible';
+    this.annotationModals[id].style.visibility = 'visible';
 
-    this.annotationModal.setAttribute('aria-hidden', false);
+    this.annotationModals[id].setAttribute('aria-hidden', false);
 
-    clickedElement.parentNode.insertBefore(this.annotationModal, clickedElement.nextSibling);
+    clickedElement.parentNode.insertBefore(this.annotationModals[id], clickedElement.nextSibling);
   }
 
   generateAnnotationMarkup(data) {
