@@ -3,23 +3,6 @@
 
 import MarkdownIt from 'markdown-it';
 
-function debounce(func, wait, immediate) {
-  let timeout;
-  return () => {
-    const context = this;
-    const args = arguments;
-    const later = () => {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-}
-
-
 class Annotation {
   constructor(rootElement, options) {
     this.rootElement = rootElement;
@@ -160,7 +143,6 @@ class Annotation {
   }
 
   appendAnnotation(annotations) {
-    const annotationWidth = this.calculateAnnotationWidth();
     annotations.forEach((annotation, i) => {
       const id = `annotation-${i}`;
       this.annotationModals[id] = {};
@@ -201,17 +183,6 @@ class Annotation {
     }
 
     return `${md.render(data.annotation.md)} ${authorLink}`;
-  }
-
-  calculateAnnotationWidth() {
-    const spaceForAnnotation = (document.documentElement.clientWidth - (this.options.gutter + (this.options.gutter / 2))) - (this.rootElement.getBoundingClientRect().left + this.rootElement.clientWidth);
-
-
-    let width = spaceForAnnotation > this.options.minWidth ? spaceForAnnotation : 0;
-
-    width = this.options.maxWidth && width > this.options.maxWidth ? this.options.maxWidth : width;
-
-    return width;
   }
 
   calculateAnnotationYPosition(highlight, annotation) {
