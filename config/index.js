@@ -28,7 +28,7 @@ export default async function() {
   let socialSummary;
 
   const berthaId = '1Cfrkjwn-_IdlDCW9xlLcueBRf6UTA5F-eE6OMKaAz90';
-  const endpoint = `http://bertha.ig.ft.com/view/publish/gss/${berthaId}/authors,annotations,speech,pageText`;
+  const endpoint = `http://bertha.ig.ft.com/view/publish/gss/${berthaId}/speech,pageText`;
   try {
     const res = await axios(endpoint);
     const pageText = res.data.pageText;
