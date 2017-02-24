@@ -1,7 +1,7 @@
 export default () => ({ // eslint-disable-line
 
   // link file UUID
-  id: '32897c9a-d984-11e6-944b-e7eb37a6aa8e',
+  id: 'e197eab8-fad2-11e6-bd4e-68d53499ed71',
 
   // canonical URL of the published page
   // https://ig.ft.com/sites/trump-first-address get filled in by the ./configure script
@@ -45,6 +45,7 @@ export default () => ({ // eslint-disable-line
     { name: 'Joanna S Kao', url: 'https://www.ft.com/joanna-kao' },
     { name: 'Martin Stabe', url: 'https://www.ft.com/martin-stabe' },
     { name: 'Lauren Leatherby', url: 'https://www.ft.com/lauren-leatherby' },
+    { name: 'Ændrew Rininsland', url: 'https://www.ft.com/stream/authorsId/MGIwMmE5MDctYzliNi00YmJkLTk1NTUtZmY3OWM2YTFkNWJj-QXV0aG9ycw==' },
   ],
 
   // Appears in the HTML <title>
