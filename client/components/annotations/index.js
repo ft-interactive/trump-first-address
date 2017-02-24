@@ -1,19 +1,23 @@
+/* eslint max-len: "off", prefer-rest-params: "off" */
+/* global ga */
+
 import MarkdownIt from 'markdown-it';
 
 function debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
-};
+  let timeout;
+  return () => {
+    const context = this;
+    const args = arguments;
+    const later = () => {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    const callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
 
 
 class Annotation {
@@ -92,7 +96,7 @@ class Annotation {
       element.addEventListener('click', eventHandler);
       element.addEventListener('keyup', (event) => {
         if (event.keyCode === 13) {
-				  this.openAnnotation(event.target);
+          this.openAnnotation(event.target);
           if (this.selectedHighlight) {
             this.selectedHighlight.setAttribute('aria-expanded', 'false');
           }
@@ -100,6 +104,7 @@ class Annotation {
           this.selectedHighlight.setAttribute('aria-expanded', 'true');
         }
       });
+      this.openAnnotation(element);
     });
 
     window.addEventListener('resize', debounce(() => {
@@ -115,12 +120,12 @@ class Annotation {
         this.annotationModal.classList.remove('speech__annotation--absolute');
         this.annotationModal.style.width = '100%';
       }
-		}, 250));
+    }, 250));
   }
 
   getAnnotations() {
     fetch(`https://bertha.ig.ft.com/view/publish/gss/${this.options.annotationsId}/authors,annotations`)
-  	.then(response => {
+    .then(response => {
       if (!response.ok) {
         throw Error(response.statusText);
       }
@@ -129,17 +134,17 @@ class Annotation {
       this.annotations = data.annotations;
       this.addHighlighting();
       this.bindListeners();
-  	}).catch(error => {
-    		console.error(error);
-  	});
+    }).catch(error => {
+      console.error(error);
+    });
   }
 
   addHighlighting() {
-  	this.annotations.forEach((annotation, index) => {
-    if (this.elementContainingAnnotationMatcher(annotation.match) && annotation.annotation.md) {
-      this.highlightMarkup(this.elementContainingAnnotationMatcher(annotation.match), annotation.match, index);
-    }
-  	});
+    this.annotations.forEach((annotation, index) => {
+      if (this.elementContainingAnnotationMatcher(annotation.match) && annotation.annotation.md) {
+        this.highlightMarkup(this.elementContainingAnnotationMatcher(annotation.match), annotation.match, index);
+      }
+    });
     this.highlightElements = this.rootElement.querySelectorAll(`[${this.highlightAttribute}]`);
   }
 
@@ -159,9 +164,9 @@ class Annotation {
   elementContainingAnnotationMatcher(matcher) {
     for (let i = 0; i < this.rootElement.childNodes.length; i++) {
       if (this.rootElement.childNodes[i].textContent.includes(matcher)) {
-    		return this.rootElement.childNodes[i];
+        return this.rootElement.childNodes[i];
         break;
-  		}
+      }
     }
   }
 
@@ -199,18 +204,18 @@ class Annotation {
 
   generateAnnotationMarkup(data) {
     const md = new MarkdownIt();
-    console.log(data)
+    console.log(data);
     let authorLink = data.author && data.authorlink ? `<a href="${data.authorlink}" rel="author" class="speech__annotation-byline">${data.author}</a>` : '';
 
     if (authorLink === '' && data.author) {
-      authorLink = `<span class="speech__annotation-byline">${data.author}</span>`
+      authorLink = `<span class="speech__annotation-byline">${data.author}</span>`;
     }
 
     return `${md.render(data.annotation.md)} ${authorLink}`;
   }
 
   calculateAnnotationWidth() {
-    const spaceForAnnotation = (document.documentElement.clientWidth - (this.options.gutter + this.options.gutter / 2)) - (this.rootElement.getBoundingClientRect().left + this.rootElement.clientWidth);
+    const spaceForAnnotation = (document.documentElement.clientWidth - (this.options.gutter + (this.options.gutter / 2))) - (this.rootElement.getBoundingClientRect().left + this.rootElement.clientWidth);
 
 
     let width = spaceForAnnotation > this.options.minWidth ? spaceForAnnotation : 0;
@@ -219,6 +224,7 @@ class Annotation {
 
     return width;
   }
+
   calculateAnnotationYPosition(highlight, annotation) {
     if (highlight) {
       const topOfHighlight = highlight.offsetTop;
@@ -231,6 +237,7 @@ class Annotation {
         left: leftPosition,
       };
     }
+    return {};
   }
 }
 
