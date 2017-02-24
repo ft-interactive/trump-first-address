@@ -41,57 +41,6 @@ class Annotation {
     };
   }
 
-  bindListeners() {
-    const eventHandler = (event) => {
-      if (event.type === 'click' || (event.type === 'click' && event.keyCode === 13)) {
-        if (this.selectedHighlight && this.selectedHighlight === event.target) {
-          this.annotationModals.innerHTML = '';
-          this.selectedHighlight.setAttribute('aria-expanded', 'false');
-          this.selectedHighlight = null;
-          if (typeof (ga) !== 'undefined') {
-            ga('send', {
-              hitType: 'event',
-              eventCategory: 'Annotation Highlight',
-              eventAction: 'Close',
-              eventLabel: 'Trump Speech',
-            });
-          }
-        } else {
-          this.openAnnotation(event.target);
-          if (this.selectedHighlight) {
-            this.selectedHighlight.setAttribute('aria-expanded', 'false');
-          }
-          this.selectedHighlight = event.target;
-          this.selectedHighlight.setAttribute('aria-expanded', 'true');
-          if (typeof (ga) !== 'undefined') {
-            ga('send', {
-              hitType: 'event',
-              eventCategory: 'Annotation Highlight',
-              eventAction: 'Open',
-              eventLabel: 'Trump Speech',
-            });
-          }
-        }
-      }
-    };
-
-    [].forEach.call(this.highlightElements, (element) => {
-      element.addEventListener('click', eventHandler);
-      element.addEventListener('keyup', (event) => {
-        if (event.keyCode === 13) {
-          this.openAnnotation(event.target);
-          if (this.selectedHighlight) {
-            this.selectedHighlight.setAttribute('aria-expanded', 'false');
-          }
-          this.selectedHighlight = event.target;
-          this.selectedHighlight.setAttribute('aria-expanded', 'true');
-        }
-      });
-      this.openAnnotation(element);
-      element.setAttribute('aria-expanded', 'true');
-    });
-  }
-
   getAnnotations() {
     fetch(`https://bertha.ig.ft.com/view/publish/gss/${this.options.annotationsId}/authors,annotations`)
     .then(response => {
@@ -103,7 +52,6 @@ class Annotation {
       this.annotations = data.annotations;
       this.addHighlighting();
       this.appendAnnotation(this.annotations);
-      this.bindListeners();
     }).catch(error => {
       console.error(error);
     });
@@ -126,7 +74,6 @@ class Annotation {
     highlight.setAttribute(this.highlightAttribute, annotationIndex);
     highlight.setAttribute('aria-expanded', 'false');
     highlight.setAttribute('aria-controls', 'annotation');
-    highlight.setAttribute('role', 'button');
 
     if (node.innerHTML) {
       node.innerHTML = node.innerHTML.replace(matcher, highlight.outerHTML);
@@ -153,6 +100,11 @@ class Annotation {
       this.annotationModals[id].classList.add('speech__annotation');
 
       this.rootElement.appendChild(this.annotationModals[id]);
+    });
+
+    [].forEach.call(this.highlightElements, (element) => {
+      this.openAnnotation(element);
+      element.setAttribute('aria-expanded', 'true');
     });
   }
 
