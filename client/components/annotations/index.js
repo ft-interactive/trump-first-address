@@ -2,6 +2,7 @@
 /* global ga */
 
 import MarkdownIt from 'markdown-it';
+// import oExpander from 'o-expander';
 
 class Annotation {
   constructor(rootElement, options) {
@@ -94,8 +95,6 @@ class Annotation {
       const id = `annotation-${i}`;
       this.annotationModals[id] = {};
       this.annotationModals[id] = document.createElement('aside');
-      this.annotationModals[id].id = 'annotation';
-      this.annotationModals[id].setAttribute('aria-hidden', true);
       this.annotationModals[id].setAttribute('aria-live', 'polite');
       this.annotationModals[id].classList.add('speech__annotation');
 
@@ -120,7 +119,10 @@ class Annotation {
 
     this.annotationModals[id].style.visibility = 'visible';
 
-    this.annotationModals[id].setAttribute('aria-hidden', false);
+    // this.annotationModals[id].classList.add('o-expander');
+    // this.annotationModals[id].setAttribute('data-o-component', 'o-expander');
+    // this.annotationModals[id].setAttribute('data-o-expander-shrink-to', '2');
+    // this.annotationModals[id].setAttribute('data-o-expander-count-selector', 'p');
 
     clickedElement.parentNode.insertBefore(this.annotationModals[id], clickedElement.nextSibling);
   }
@@ -135,6 +137,9 @@ class Annotation {
       authorLink = `<span class="speech__annotation-byline">${data.author}</span>`;
     }
 
+    // const oExpanderButton = '<button class="o-expander__toggle o--if-js">Toggle</button>';
+
+    // return `${annotationLabel} <div class="o-expander__content"> ${md.render(data.annotation.md)} </div> ${oExpanderButton} ${authorLink}`;
     return `${annotationLabel} ${md.render(data.annotation.md)} ${authorLink}`;
   }
 
