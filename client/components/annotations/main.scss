@@ -6,10 +6,6 @@
 $o-typography-progressive-fonts: SansData;
 $highlight: rgb(80,212,196);
 
-.o-typography-body-wrapper .annotation-instructions {
-    @include oTypographySansData(l, $load-progressively: true);
-}
-
 .speech {
     background: oColorsGetPaletteColor(warm-5);
     box-shadow: 1px 1px 1px 1px rgba(oColorsGetPaletteColor('grey-tint1'), 0.5);
@@ -109,4 +105,13 @@ $highlight: rgb(80,212,196);
         background-color: rgba($highlight,0.5);
         cursor: pointer;
     }
+}
+
+.n-skip-link {
+  z-index: 107!important;
+  position: absolute;
+  top: 1em;
+  left: -9999px;
+  padding: .5em 1em;
+  color: #fff;
 }

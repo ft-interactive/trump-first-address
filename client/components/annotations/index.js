@@ -127,14 +127,15 @@ class Annotation {
 
   generateAnnotationMarkup(data) {
     const md = new MarkdownIt();
-    // console.log(data);
+    const annotationLabel = `<span class="n-skip-link">Annotation by ${data.author}</span>`;
+
     let authorLink = data.author && data.authorlink ? `<a href="${data.authorlink}" rel="author" class="speech__annotation-byline">${data.author}</a>` : '';
 
     if (authorLink === '' && data.author) {
       authorLink = `<span class="speech__annotation-byline">${data.author}</span>`;
     }
 
-    return `${md.render(data.annotation.md)} ${authorLink}`;
+    return `${annotationLabel} ${md.render(data.annotation.md)} ${authorLink}`;
   }
 
   calculateAnnotationYPosition(highlight, annotation) {
