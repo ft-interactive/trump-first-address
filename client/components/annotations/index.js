@@ -71,14 +71,14 @@ class Annotation {
       }).then(data => {
         let newAnnotations = data.annotations.filter((el) => this.annotations.map(d => d.match).indexOf(el.match) < 0);
         // console.log(newAnnotations);
-        this.annotations = this.annotations.concat(newAnnotations);
         this.addHighlighting(newAnnotations);
+        this.annotations = this.annotations.concat(newAnnotations);
         this.appendAnnotation(newAnnotations);
       }).catch(error => {
         console.error(error);
       });
       this.updateAnnotations();
-    }, 15000);
+    }, 5000);
   }
 
   addHighlighting(annotations) {
@@ -86,7 +86,7 @@ class Annotation {
       if (this.elementContainingAnnotationMatcher(annotation.match) && annotation.annotation.md) {
         let annotationIndex = index;
         if (annotations.length !== this.annotations.length) {
-          annotationIndex = index + this.annotations.length - 1;
+          annotationIndex = index + this.annotations.length;
         }
         this.highlightMarkup(this.elementContainingAnnotationMatcher(annotation.match), annotation.match, annotationIndex);
       }
@@ -121,7 +121,7 @@ class Annotation {
     annotations.forEach((annotation, i) => {
       let annotationIndex = i;
       if (this.annotations.length - annotations.length !== 0) {
-        annotationIndex = this.annotations.length - annotations.length;
+        annotationIndex = this.annotations.length - annotations.length + i;
       }
       const id = `annotation-${annotationIndex}`;
       this.annotationModals[id] = {};
@@ -131,11 +131,10 @@ class Annotation {
       this.annotationModals[id].setAttribute('data-highlight-attribute', annotationIndex);
 
       this.rootElement.appendChild(this.annotationModals[id]);
-    });
 
-    [].forEach.call(this.highlightElements, (element) => {
-      this.openAnnotation(element);
-      element.setAttribute('aria-expanded', 'true');
+      const highlight = document.querySelector(`mark[data-highlight="${annotationIndex}"]`);
+      this.openAnnotation(highlight);
+      highlight.setAttribute('aria-expanded', 'true');
     });
 
     // oExpander.init();
@@ -144,6 +143,7 @@ class Annotation {
   openAnnotation(clickedElement) {
     const annotationIndex = clickedElement.getAttribute(this.highlightAttribute);
     const id = `annotation-${annotationIndex}`;
+
     this.annotationModals[id].innerHTML = this.generateAnnotationMarkup(this.annotations[annotationIndex]);
 
     this.annotationModals[id].style.top = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModals[id]).top}px`;
