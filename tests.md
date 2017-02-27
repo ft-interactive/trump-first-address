@@ -12,3 +12,8 @@
 - All annotations published on the spreadsheet should show up on the page (any annotation with more than one paragraph should be collapsed)
 - If you edit an annotation after it's been published, it will not automatically update, but should show an update on refresh
 - If you delete an annotation after it's been published, it will not automatically delete itself, but it will be gone if you refresh the page
+
+### Other
+
+- Annotations shouldn't disappear when the window changes size
+- Clicking on highlighted text shouldn't change anything on the page
