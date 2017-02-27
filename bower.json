@@ -6,6 +6,7 @@
     "o-grid": "^4.2.1",
     "o-icons": "^5.2.2",
     "o-typography": "^4.3.2",
-    "o-expander": "^4.2.2"
+    "o-expander": "^4.2.2",
+    "o-buttons": "^4.5.4"
   }
 }

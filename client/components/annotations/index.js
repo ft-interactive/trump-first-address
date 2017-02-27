@@ -157,6 +157,8 @@ class Annotation {
     this.annotationModals[id].setAttribute('data-o-component', 'o-expander');
     this.annotationModals[id].setAttribute('data-o-expander-shrink-to', '1');
     this.annotationModals[id].setAttribute('data-o-expander-count-selector', 'p');
+    this.annotationModals[id].setAttribute('data-o-expander-expanded-toggle-text', 'Read less');
+    this.annotationModals[id].setAttribute('data-o-expander-collapsed-toggle-text', 'Read more');
 
     clickedElement.parentNode.insertBefore(this.annotationModals[id], clickedElement.nextSibling);
   }
@@ -171,7 +173,7 @@ class Annotation {
       authorLink = `<span class="speech__annotation-byline">${data.author}</span>`;
     }
 
-    const oExpanderButton = '<button class="o-expander__toggle o--if-js">Toggle</button>';
+    const oExpanderButton = '<button class="o-buttons o-buttons--small o-expander__toggle o--if-js">Read more</button>';
 
     return `${annotationLabel} <div class="o-expander__content"> ${md.render(data.annotation.md)} </div> ${oExpanderButton} ${authorLink}`;
   }

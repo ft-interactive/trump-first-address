@@ -68,7 +68,7 @@ export default () => ({ // eslint-disable-line
         optional social meta data?
   */
   // General social
-  socialImage: 'https://www.ft.com/__origami/service/image/v2/images/raw/http%3A%2F%2Fcom.ft.imagepublish.prod.s3.amazonaws.com%2F209eeefc-df33-11e6-86ac-f253db7791c6?source=ig&fit=scale-down&width=1200',
+  socialImage: 'https://www.ft.com/__origami/service/image/v2/images/raw/http%3A%2F%2Fcom.ft.imagepublish.prod.s3.amazonaws.com%2F24135812-f418-11e6-95ee-f14e55513608?source=ig&fit=scale-down&width=1200',
   socialHeadline: '',
   socialSummary: '',
 

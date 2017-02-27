@@ -18,3 +18,9 @@
 
 - Annotations shouldn't disappear when the window changes size
 - Clicking on highlighted text shouldn't change anything on the page
+
+
+### Broken Tests
+
+- If you edit the match column of an annotation after it's been published, it should update
+- If you leave a dangling period, it should get absorbed with the match. At the moment, it looks sad.
