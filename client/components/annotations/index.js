@@ -110,7 +110,7 @@ class Annotation {
 
   elementContainingAnnotationMatcher(matcher) {
     for (let i = 0; i < this.rootElement.childNodes.length; i++) {
-      if (this.rootElement.childNodes[i].textContent.includes(matcher)) {
+      if (this.rootElement.childNodes[i].textContent.replace(/'/g,"’").includes(matcher.replace(/'/g,"’"))) {
         return this.rootElement.childNodes[i];
         break;
       }
