@@ -86,5 +86,9 @@
     "prestart": "npm run clean",
     "start": "nodemon --watch gulpfile.babel.js --exec 'gulp watch'",
     "test": "npm run lint && npm run build"
+  },
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "preact": "^7.2.0"
   }
 }

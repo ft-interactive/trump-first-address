@@ -2,6 +2,8 @@ import article from './article';
 import getFlags from './flags';
 import getOnwardJourney from './onward-journey';
 import axios from 'axios';
+import cheerio from 'cheerio';
+import { render, h } from 'preact';
 
 function annotateSpeech(annotations) {
   let manipulatedHtml = speechBody.html;
@@ -23,6 +25,8 @@ export default async function() {
   let title;
   let description;
   let speech;
+  let annotations;
+  let decorated;
   let socialImage;
   let socialHeadline;
   let socialSummary;
@@ -38,6 +42,20 @@ export default async function() {
     title = headline;
     description = summary;
     speech = res.data.speech[0].text;
+    annotations = res.data.annotations;
+
+    const $ = cheerio.load(speech);
+
+    annotations.forEach(a => {
+      $(`p:contains(${a.match})`).each((i, el) => {
+        const replacement = $('<mark></mark>')
+          .attr('aria-expanded', true)
+          .text(a.match);
+        $(el).html($(el).html().replace(a.match, replacement.html()));
+      });
+    });
+
+    decorated = $.html();
 
     socialImage = pageText.filter((d) => d.key === 'socialImage')[0].value;
     socialHeadline = pageText.filter((d) => d.key === 'socialHeadline')[0].value;
@@ -54,7 +72,7 @@ export default async function() {
     summary,
     title,
     description,
-    speech,
+    speech: decorated,
     socialImage,
     socialHeadline,
     socialSummary,
