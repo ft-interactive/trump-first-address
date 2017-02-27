@@ -14,6 +14,9 @@ class Annotation {
     this.selectedHighlight;
     this.annotationModals = {};
 
+    // get rid of smart quotes — to fix matching bug
+    this.rootElement.innerHTML = this.rootElement.innerHTML.replace(/‘/g, "'").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"");
+
     this.getAnnotations();
   }
 
@@ -51,6 +54,7 @@ class Annotation {
       return response.json();
     }).then(data => {
       this.annotations = data.annotations;
+      // this.annotations.map(annotation => annotation.match = annotation.match.replace(/'/g, "’").replace(/"/g, "”"))
       this.addHighlighting(data.annotations);
       this.appendAnnotation(this.annotations);
       this.updateAnnotations();
@@ -110,7 +114,7 @@ class Annotation {
 
   elementContainingAnnotationMatcher(matcher) {
     for (let i = 0; i < this.rootElement.childNodes.length; i++) {
-      if (this.rootElement.childNodes[i].textContent.replace(/'/g,"’").includes(matcher.replace(/'/g,"’"))) {
+      if (this.rootElement.childNodes[i].textContent.includes(matcher)) {
         return this.rootElement.childNodes[i];
         break;
       }
