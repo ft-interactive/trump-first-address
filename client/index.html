@@ -6,21 +6,18 @@
 {{ annotations | dump }}
 <div class="o-grid-row">
 
-<section data-o-grid-colspan="12 S11 Scenter M9 Lpush1 Luncenter L10" id="speech-intro">
+
+<section data-o-grid-colspan="12 M10 Mcenter L8 Lpush1 Luncenter XL7">
 
 {{ intro }}
 
-</section>
-
-<section data-o-grid-colspan="12 Scenter M10 Mcenter L8 XL7">
-
-<br />
-
-<div class="speech" data-annotation-text data-annotation-id="{{berthaId}}">
+<p class="annotation-instructions">Select the <mark class="speech__highlight speech__highlight--pulse">highlights</mark> to read the annotations</p>
+	<div class="speech" data-annotation-text data-annotation-id="{{berthaId}}">
 <span class="speech__quote speech__quote--top"></span>
 
 {{ speech | safe }}
 
+<span class="speech__quote speech__quote--bottom"></span>
 </div>
 
 
