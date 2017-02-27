@@ -13,9 +13,9 @@ $highlight: rgba(80,212,196,0.25);
   max-width: 720px;
 }
 
-// .o-buttons.o-expander__toggle {
-//   @include oButtons();
-// }
+.o-expander:not(.o-expander--inactive) .o-buttons.o-expander__toggle {
+  @include oButtons();
+}
 
 .speech {
     // background: oColorsGetPaletteColor(warm-5);
