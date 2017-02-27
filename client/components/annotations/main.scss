@@ -4,13 +4,15 @@
 @import 'o-typography/main';
 
 $o-typography-progressive-fonts: SansData;
-$highlight: rgb(80,212,196);
+$highlight: rgba(80,212,196,0.25);
 
 .speech {
-    background: oColorsGetPaletteColor(warm-5);
-    box-shadow: 1px 1px 1px 1px rgba(oColorsGetPaletteColor('grey-tint1'), 0.5);
+    // background: oColorsGetPaletteColor(warm-5);
+    // box-shadow: 1px 1px 1px 1px rgba(oColorsGetPaletteColor('grey-tint1'), 0.5);
     padding: 20px 26px;
     margin-bottom: 20px;
+    border-top: 1px solid rgba(oColorsGetPaletteColor('grey-tint1'), 0.5);
+
     @include oGridRespondTo(M) {
         padding: 20px 40px;
     }
@@ -51,17 +53,24 @@ $highlight: rgb(80,212,196);
   right: -60px;
 }
 
+.o-typography-body-wrapper aside div p {
+  font-size: 16px;
+  line-height: 20px;
+}
+
 .speech__annotation {
     box-sizing: border-box;
     visibility: hidden;
-    border-left: 3px solid $highlight;
-    padding-left: 10px;
-    margin: 30px 10px;
+    border-left: 5px solid $highlight;
+    padding: 20px;
+    margin: 28px 10px 40px 0;
+    background: oColorsGetPaletteColor('pink-tint2');
 
     p {
         @include oTypographySansData(l, $load-progressively: true);
-        font-size: 18px;
+        font-size: 16px;
         color: #333333;
+        font-weight: 600;
 
         img {
           margin-top: 10px !important;
@@ -76,8 +85,9 @@ $highlight: rgb(80,212,196);
     .speech__annotation-byline {
         display: block;
         @include oTypographySansData(l, $load-progressively: true);
-        color: #6A6A6A;
+        // color: #6A6A6A;
         font-size: 16px;
+        font-weight: 600;
         border: 0;
         margin-bottom: -5px;
         padding-top: 5px;
