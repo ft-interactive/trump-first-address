@@ -6,6 +6,7 @@
 - When you add an annotation with more than one paragraph, it should also show up with o-expander
 - When you add multiple annotations, they should automatically show up on the page without affecting other annotations
 - When you add an annotation to the middle of the spreadsheet, the same thing should happen as if you add an annotation to the bottom of a spreadsheet.
+- Annotations on the same paragraph should be treated the same way as annotations in different paragraphs (they should not affect each other)
 
 ### Tests on generating annotations on page
 

@@ -2,7 +2,7 @@
 /* global ga */
 
 import MarkdownIt from 'markdown-it';
-// import oExpander from 'o-expander';
+import * as expander from 'o-expander'; // eslint-disable-line
 
 class Annotation {
   constructor(rootElement, options) {
@@ -137,7 +137,7 @@ class Annotation {
       highlight.setAttribute('aria-expanded', 'true');
     });
 
-    // oExpander.init();
+    expander.init(null, {});
   }
 
   openAnnotation(clickedElement) {
