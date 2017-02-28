@@ -25,7 +25,9 @@ export default async function() {
   let speech;
   let socialImage;
   let socialHeadline;
-  let socialSummary;
+  let tweetText;
+  let twitterHeadline;
+  let facebookHeadline;
 
   const berthaId = '1Cfrkjwn-_IdlDCW9xlLcueBRf6UTA5F-eE6OMKaAz90';
   const endpoint = `http://bertha.ig.ft.com/view/publish/gss/${berthaId}/speech,pageText`;
@@ -41,7 +43,9 @@ export default async function() {
 
     socialImage = pageText.filter((d) => d.key === 'socialImage')[0].value;
     socialHeadline = pageText.filter((d) => d.key === 'socialHeadline')[0].value;
-    socialSummary = pageText.filter((d) => d.key === 'socialSummary')[0].value;
+    tweetText = pageText.filter((d) => d.key === 'tweetText')[0].value;
+    twitterHeadline = pageText.filter((d) => d.key === 'twitterHeadline')[0].value;
+    facebookHeadline = pageText.filter((d) => d.key === 'facebookHeadline')[0].value;
   } catch (e) {
     console.log('Error getting content from Bertha', e);
   }
@@ -57,7 +61,9 @@ export default async function() {
     speech,
     socialImage,
     socialHeadline,
-    socialSummary,
+    tweetText,
+    twitterHeadline,
+    facebookHeadline,
     flags,
     onwardJourney,
   };
