@@ -87,6 +87,7 @@ class Annotation {
 
   addHighlighting(annotations) {
     annotations.forEach((annotation, index) => {
+      annotation.match = annotation.match.replace(/‘/g, "'").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"");
       if (this.elementContainingAnnotationMatcher(annotation.match) && annotation.annotation.md) {
         let annotationIndex = index;
         if (annotations.length !== this.annotations.length) {
