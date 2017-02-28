@@ -73,7 +73,7 @@ class Annotation {
         }
         return response.json();
       }).then(data => {
-        let newAnnotations = data.annotations.filter((el) => this.annotations.map(d => d.match).indexOf(el.match) < 0);
+        let newAnnotations = data.annotations.filter((el) => this.annotations.map(d => d.match.replace(/‘/g, "'").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"")).indexOf(el.match.replace(/‘/g, "'").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"")) < 0);
         // console.log(newAnnotations);
         this.addHighlighting(newAnnotations);
         this.annotations = this.annotations.concat(newAnnotations);
