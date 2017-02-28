@@ -73,13 +73,15 @@ export default () => ({ // eslint-disable-line
   socialSummary: '',
 
   // TWITTER
-  twitterImage: 'https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fig.ft.com%2Fsites%2Ftrump-first-address%2Fimages%2FTRUMP_SPEECH_TWITTER.jpg?source=ig&width=1200',
+  // twitterImage: 'https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fig.ft.com%2Fsites%2Ftrump-first-address%2Fimages%2FTRUMP_SPEECH_TWITTER.jpg?source=ig&width=1200',
+twitterImage: 'https://ig.ft.com/sites/trump-first-address/images/TRUMP_SPEECH_TWITTER.jpg',
 twitterCreator: '@ft',
   // tweetText:  '',
 //twitterHeadline:  'Trump\'s #Inauguration speech transcript, annotated',
 
   // FACEBOOK
-  facebookImage: 'https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fig.ft.com%2Fsites%2Ftrump-first-address%2Fimages%2FTRUMP_SPEECH_FACE.jpg?source=ig&width=1200',
+  // facebookImage: 'https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fig.ft.com%2Fsites%2Ftrump-first-address%2Fimages%2FTRUMP_SPEECH_FACE.jpg?source=ig&width=1200',
+  facebookImage: 'https://ig.ft.com/sites/trump-first-address/images/TRUMP_SPEECH_FACE.jpg',
   // facebookHeadline: '',
 
   tracking: {
