@@ -1,8 +1,20 @@
-/* eslint max-len: "off", prefer-rest-params: "off" */
-/* global ga */
-
 import MarkdownIt from 'markdown-it';
-import * as expander from 'o-expander'; // eslint-disable-line
+
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
 
 class Annotation {
   constructor(rootElement, options) {
@@ -12,12 +24,12 @@ class Annotation {
     this.highlightElements;
     this.annotations;
     this.selectedHighlight;
-    this.annotationModals = {};
 
     // get rid of smart quotes — to fix matching bug
     this.rootElement.innerHTML = this.rootElement.innerHTML.replace(/‘/g, "'").replace(/’/g, "'").replace(/“/g, "\"").replace(/”/g, "\"");
 
     this.getAnnotations();
+    this.appendAnnotation();
   }
 
   static init(rootElement, options = {}) {
@@ -45,56 +57,92 @@ class Annotation {
     };
   }
 
+  bindListeners() {
+    const eventHandler = (event) => {
+      if (event.type === 'click' || (event.type === 'click' && event.keyCode === 13)) {
+        if (this.selectedHighlight && this.selectedHighlight === event.target) {
+          this.annotationModal.innerHTML = '';
+          this.selectedHighlight.setAttribute('aria-expanded', 'false');
+          this.selectedHighlight = null;
+          if (typeof (ga) !== 'undefined') {
+            ga('send', {
+              hitType: 'event',
+              eventCategory: 'Annotation Highlight',
+              eventAction: 'Close',
+              eventLabel: 'Trump Speech',
+            });
+          }
+        } else {
+          this.openAnnotation(event.target);
+          if (this.selectedHighlight) {
+            this.selectedHighlight.setAttribute('aria-expanded', 'false');
+          }
+          this.selectedHighlight = event.target;
+          this.selectedHighlight.setAttribute('aria-expanded', 'true');
+          if (typeof (ga) !== 'undefined') {
+            ga('send', {
+              hitType: 'event',
+              eventCategory: 'Annotation Highlight',
+              eventAction: 'Open',
+              eventLabel: 'Trump Speech',
+            });
+          }
+        }
+      }
+    };
+
+    [].forEach.call(this.highlightElements, (element) => {
+      element.addEventListener('click', eventHandler);
+      element.addEventListener('keyup', (event) => {
+        if (event.keyCode === 13) {
+				  this.openAnnotation(event.target);
+          if (this.selectedHighlight) {
+            this.selectedHighlight.setAttribute('aria-expanded', 'false');
+          }
+          this.selectedHighlight = event.target;
+          this.selectedHighlight.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    window.addEventListener('resize', debounce(() => {
+      const width = this.calculateAnnotationWidth();
+
+      if (width && this.selectedHighlight) {
+        const annotationPosition = this.calculateAnnotationYPosition(this.selectedHighlight, this.annotationModal);
+        this.annotationModal.classList.add('speech__annotation--absolute');
+        this.annotationModal.style.width = `${this.calculateAnnotationWidth()}px`;
+        this.annotationModal.style.top = `${annotationPosition.top}px`;
+        this.annotationModal.style.left = `${annotationPosition.left}px`;
+      } else {
+        this.annotationModal.classList.remove('speech__annotation--absolute');
+        this.annotationModal.style.width = '100%';
+      }
+		}, 250));
+  }
+
   getAnnotations() {
     fetch(`https://bertha.ig.ft.com/view/publish/gss/${this.options.annotationsId}/authors,annotations`)
-    .then(response => {
+  	.then(response => {
       if (!response.ok) {
         throw Error(response.statusText);
       }
       return response.json();
     }).then(data => {
       this.annotations = data.annotations;
-      // this.annotations.map(annotation => annotation.match = annotation.match.replace(/'/g, "’").replace(/"/g, "”"))
-      this.addHighlighting(data.annotations);
-      this.appendAnnotation(this.annotations);
-      this.updateAnnotations();
-    }).catch(error => {
-      console.error(error);
-    });
+      this.addHighlighting();
+      this.bindListeners();
+  	}).catch(error => {
+    		console.error(error);
+  	});
   }
 
-  updateAnnotations() {
-    setTimeout(() => {
-      // console.log('checking for updates');
-      fetch(`https://bertha.ig.ft.com/view/publish/gss/${this.options.annotationsId}/authors,annotations`)
-      .then(response => {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response.json();
-      }).then(data => {
-        let newAnnotations = data.annotations.filter((el) => this.annotations.map(d => d.match).indexOf(el.match) < 0);
-        // console.log(newAnnotations);
-        this.addHighlighting(newAnnotations);
-        this.annotations = this.annotations.concat(newAnnotations);
-        this.appendAnnotation(newAnnotations);
-      }).catch(error => {
-        console.error(error);
-      });
-      this.updateAnnotations();
-    }, 5000);
-  }
-
-  addHighlighting(annotations) {
-    annotations.forEach((annotation, index) => {
-      if (this.elementContainingAnnotationMatcher(annotation.match) && annotation.annotation.md) {
-        let annotationIndex = index;
-        if (annotations.length !== this.annotations.length) {
-          annotationIndex = index + this.annotations.length;
-        }
-        this.highlightMarkup(this.elementContainingAnnotationMatcher(annotation.match), annotation.match, annotationIndex);
-      }
-    });
+  addHighlighting() {
+  	this.annotations.forEach((annotation, index) => {
+    if (this.elementContainingAnnotationMatcher(annotation.match) && annotation.annotation.md) {
+      this.highlightMarkup(this.elementContainingAnnotationMatcher(annotation.match), annotation.match, index);
+    }
+  	});
     this.highlightElements = this.rootElement.querySelectorAll(`[${this.highlightAttribute}]`);
   }
 
@@ -106,82 +154,74 @@ class Annotation {
     highlight.setAttribute(this.highlightAttribute, annotationIndex);
     highlight.setAttribute('aria-expanded', 'false');
     highlight.setAttribute('aria-controls', 'annotation');
+    highlight.setAttribute('role', 'button');
 
-    if (node.innerHTML) {
-      node.innerHTML = node.innerHTML.replace(matcher, highlight.outerHTML);
-    }
+    node.innerHTML = node.innerHTML.replace(matcher, highlight.outerHTML);
   }
 
   elementContainingAnnotationMatcher(matcher) {
     for (let i = 0; i < this.rootElement.childNodes.length; i++) {
       if (this.rootElement.childNodes[i].textContent.includes(matcher)) {
-        return this.rootElement.childNodes[i];
+    		return this.rootElement.childNodes[i];
         break;
-      }
+  		}
     }
   }
 
-  appendAnnotation(annotations) {
-    annotations.forEach((annotation, i) => {
-      let annotationIndex = i;
-      if (this.annotations.length - annotations.length !== 0) {
-        annotationIndex = this.annotations.length - annotations.length + i;
-      }
-      const id = `annotation-${annotationIndex}`;
-      this.annotationModals[id] = {};
-      this.annotationModals[id] = document.createElement('aside');
-      this.annotationModals[id].setAttribute('aria-live', 'polite');
-      this.annotationModals[id].classList.add('speech__annotation');
-      this.annotationModals[id].setAttribute('data-highlight-attribute', annotationIndex);
+  appendAnnotation() {
+    const annotationWidth = this.calculateAnnotationWidth();
+    this.annotationModal = document.createElement('aside');
+    this.annotationModal.id = 'annotation';
+    this.annotationModal.setAttribute('aria-hidden', true);
+    this.annotationModal.setAttribute('aria-live', 'polite');
+    this.annotationModal.classList.add('speech__annotation');
 
-      this.rootElement.appendChild(this.annotationModals[id]);
+    if (annotationWidth) {
+      this.annotationModal.classList.add('speech__annotation--absolute');
+      this.annotationModal.style.width = `${annotationWidth}px`;
+    }
 
-      const highlight = document.querySelector(`mark[data-highlight="${annotationIndex}"]`);
-      this.openAnnotation(highlight);
-      highlight.setAttribute('aria-expanded', 'true');
-    });
-
-    expander.init(null, {});
+    this.rootElement.appendChild(this.annotationModal);
   }
 
   openAnnotation(clickedElement) {
     const annotationIndex = clickedElement.getAttribute(this.highlightAttribute);
-    const id = `annotation-${annotationIndex}`;
+    this.annotationModal.innerHTML = this.generateAnnotationMarkup(this.annotations[annotationIndex]);
 
-    this.annotationModals[id].innerHTML = this.generateAnnotationMarkup(this.annotations[annotationIndex]);
-
-    this.annotationModals[id].style.top = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModals[id]).top}px`;
+    this.annotationModal.style.top = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModal).top}px`;
 
 
-    this.annotationModals[id].style.left = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModals[id]).left}px`;
+    this.annotationModal.style.left = `${this.calculateAnnotationYPosition(clickedElement, this.annotationModal).left}px`;
 
-    this.annotationModals[id].style.visibility = 'visible';
+    this.annotationModal.style.visibility = 'visible';
 
-    this.annotationModals[id].classList.add('o-expander');
-    this.annotationModals[id].setAttribute('data-o-component', 'o-expander');
-    this.annotationModals[id].setAttribute('data-o-expander-shrink-to', '1');
-    this.annotationModals[id].setAttribute('data-o-expander-count-selector', 'p');
-    this.annotationModals[id].setAttribute('data-o-expander-expanded-toggle-text', 'Read less');
-    this.annotationModals[id].setAttribute('data-o-expander-collapsed-toggle-text', 'Read more');
+    this.annotationModal.setAttribute('aria-hidden', false);
 
-    clickedElement.parentNode.insertBefore(this.annotationModals[id], clickedElement.nextSibling);
+    clickedElement.parentNode.insertBefore(this.annotationModal, clickedElement.nextSibling);
   }
 
   generateAnnotationMarkup(data) {
     const md = new MarkdownIt();
-    const annotationLabel = `<span class="n-skip-link">Annotation by ${data.author}</span>`;
-
+    // console.log(data)
     let authorLink = data.author && data.authorlink ? `<a href="${data.authorlink}" rel="author" class="speech__annotation-byline">${data.author}</a>` : '';
 
     if (authorLink === '' && data.author) {
-      authorLink = `<span class="speech__annotation-byline">${data.author}</span>`;
+      authorLink = `<span class="speech__annotation-byline">${data.author}</span>`
     }
 
-    const oExpanderButton = '<button class="o-buttons o-buttons--small o-expander__toggle o--if-js">Read more</button>';
-
-    return `${annotationLabel} <div class="o-expander__content"> ${md.render(data.annotation.md)} </div> ${oExpanderButton} ${authorLink}`;
+    return `${md.render(data.annotation.md)} ${authorLink}`;
   }
 
+  calculateAnnotationWidth() {
+    const spaceForAnnotation = (document.documentElement.clientWidth - (this.options.gutter + this.options.gutter / 2)) - (this.rootElement.getBoundingClientRect().left + this.rootElement.clientWidth);
+
+
+    let width = spaceForAnnotation > this.options.minWidth ? spaceForAnnotation : 0;
+
+    width = this.options.maxWidth && width > this.options.maxWidth ? this.options.maxWidth : width;
+
+    return width;
+  }
   calculateAnnotationYPosition(highlight, annotation) {
     if (highlight) {
       const topOfHighlight = highlight.offsetTop;
@@ -194,7 +234,6 @@ class Annotation {
         left: leftPosition,
       };
     }
-    return {};
   }
 }
 

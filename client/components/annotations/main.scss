@@ -2,31 +2,22 @@
 @import 'o-icons/main';
 @import 'o-colors/main';
 @import 'o-typography/main';
-@import 'o-buttons/main';
 
 $o-typography-progressive-fonts: SansData;
-$highlight: rgba(80,212,196,0.25);
+$highlight: rgb(80,212,196);
 
-#speech-intro {
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(oColorsGetPaletteColor('grey-tint1'), 0.5);
-  max-width: 720px;
-}
-
-.o-expander:not(.o-expander--inactive) .o-buttons.o-expander__toggle {
-  @include oButtons();
+.o-typography-body-wrapper .annotation-instructions {
+    @include oTypographySansData(l, $load-progressively: true);
 }
 
 .speech {
-    // background: oColorsGetPaletteColor(warm-5);
-    // box-shadow: 1px 1px 1px 1px rgba(oColorsGetPaletteColor('grey-tint1'), 0.5);
-    padding: 20px 0;
+    background: oColorsGetPaletteColor(warm-5);
+    box-shadow: 1px 1px 1px 1px rgba(oColorsGetPaletteColor('grey-tint1'), 0.5);
+    padding: 20px 26px;
     margin-bottom: 20px;
-
-    // @include oGridRespondTo(M) {
-    //     padding: 20px 40px;
-    // }
-
+    @include oGridRespondTo(M) {
+        padding: 20px 40px;
+    }
     p {
         color: #505050;
         line-height: 1.8;
@@ -34,12 +25,27 @@ $highlight: rgba(80,212,196,0.25);
 }
 
 .speech__quote--top {
-  @include oIconsGetIcon('speech-left', #333333, 48);
+  @include oIconsGetIcon('speech-left', oColorsGetPaletteColor('grey-tint2'), 48);
+}
+
+.speech__quote--bottom {
+    @include oIconsGetIcon('speech-right', oColorsGetPaletteColor('grey-tint2'), 48);
 }
 
 .speech__quote {
   position: relative;
   display: block;
+  margin: 0 auto;
+}
+
+.speech__quote:before,
+.speech__quote:after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 48px;
+  top: 24px;
+  border-top: 1px solid oColorsGetPaletteColor('grey-tint2');
 }
 
 .speech__quote:before {
@@ -49,32 +55,23 @@ $highlight: rgba(80,212,196,0.25);
   right: -60px;
 }
 
-.o-typography-body-wrapper aside div p {
-  font-size: 18px;
-  line-height: 24px;
-}
-
 .speech__annotation {
     box-sizing: border-box;
     visibility: hidden;
-    border-left: 5px solid $highlight;
-    padding: 20px;
-    margin: 28px 10px 40px 0;
-    background: #EDE0CC;
+    border-left: 3px solid $highlight;
+    padding-left: 10px;
+    margin: 30px 10px;
 
     p {
         @include oTypographySansData(l, $load-progressively: true);
-        font-size: 16px;
+        font-size: 18px;
         color: #333333;
-        font-weight: 600;
 
         img {
           margin-top: 10px !important;
           display: block;
           width: 100%;
           max-width: 300px;
-          margin-left: auto;
-          margin-right: auto;
         }
     }
     :first-child {
@@ -83,9 +80,8 @@ $highlight: rgba(80,212,196,0.25);
     .speech__annotation-byline {
         display: block;
         @include oTypographySansData(l, $load-progressively: true);
-        // color: #6A6A6A;
+        color: #6A6A6A;
         font-size: 16px;
-        font-weight: 600;
         border: 0;
         margin-bottom: -5px;
         padding-top: 5px;
@@ -115,11 +111,18 @@ $highlight: rgba(80,212,196,0.25);
     }
 }
 
-.n-skip-link {
-  z-index: 107!important;
-  position: absolute;
-  top: 1em;
-  left: -9999px;
-  padding: .5em 1em;
-  color: #fff;
+.speech__highlight--pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: rgba(oColorsGetPaletteColor('grey-tint5'), 0.15);
+  }
+  50% {
+    background-color: $highlight;
+  }
+  100% {
+    background-color: rgba(oColorsGetPaletteColor('grey-tint5'), 0.15);
+  }
 }
