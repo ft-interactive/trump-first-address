@@ -37,15 +37,12 @@ export default () => ({ // eslint-disable-line
   // Byline can by a plain string, markdown, or array of authors
   // if array of authors, url is optional
   byline: [
-    { name: 'Glynn Phillips', url: 'https://twitter.com/glynnphillips' },
-    { name: 'Caroline Nevitt', url: 'https://www.ft.com/topics/authors/Caroline_Nevitt' },
-    { name: 'Shawn Donnan', url: 'https://www.ft.com/stream/authorsId/Q0ItMDAwMTI0NQ==-QXV0aG9ycw==' },
-    { name: 'Barney Jopson', url: 'https://www.ft.com/stream/authorsId/Q0ItMDAwMDc5MA==-QXV0aG9ycw==' },
-    { name: 'David J Lynch', url: 'https://www.ft.com/stream/authorsId/ZmZjOWNjZDQtZmE2MC00MTA4LWI5NWMtNjUwNjI5OTM0ZTQw-QXV0aG9ycw==' },
     { name: 'Joanna S Kao', url: 'https://www.ft.com/joanna-kao' },
-    { name: 'Martin Stabe', url: 'https://www.ft.com/martin-stabe' },
+    { name: 'Claire Manibog', url: 'https://www.ft.com/claire-manibog' },    
     { name: 'Lauren Leatherby', url: 'https://www.ft.com/lauren-leatherby' },
     { name: 'Ændrew Rininsland', url: 'https://www.ft.com/stream/authorsId/MGIwMmE5MDctYzliNi00YmJkLTk1NTUtZmY3OWM2YTFkNWJj-QXV0aG9ycw==' },
+    { name: 'Caroline Nevitt', url: 'https://www.ft.com/topics/authors/Caroline_Nevitt' },
+    { name: 'Barney Jopson', url: 'https://www.ft.com/stream/authorsId/Q0ItMDAwMDc5MA==-QXV0aG9ycw==' },    
   ],
 
   // Appears in the HTML <title>
