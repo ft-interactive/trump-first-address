@@ -216,7 +216,7 @@ gulp.task('html', () =>
     .pipe(htmlmin({
       collapseWhitespace: true,
       processConditionalComments: true,
-      minifyJS: true,
+      // minifyJS: true, // CAUSES BUG and also appears to be unnecessary as scripts seem to be minified already
     }))
     .pipe(gulp.dest('dist'))
 );
