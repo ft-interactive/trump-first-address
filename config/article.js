@@ -9,7 +9,7 @@ export default () => ({ // eslint-disable-line
 
   // To set an exact publish date do this:
   //       new Date('2016-05-17T17:11:22Z')
-  publishedDate: new Date(),
+  publishedDate: new Date('2017-04-11T17:26:35.602Z'),
 
   headline: 'Donald Trump’s address to Congress — annotated',
 
